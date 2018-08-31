@@ -1,0 +1,136 @@
+//coded by Kevin Li
+//Free Code Camp JS Calculator Project
+const operators = /[-+*/]/,
+      decimal = /[.]/;
+
+class Calculator extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '0',
+      lastInput: '0',
+      formula: '0'
+    }
+    this.clear = this.clear.bind(this);
+    this.numberInput = this.numberInput.bind(this);
+    this.operatorInput = this.operatorInput.bind(this);
+    this.evaluateInput = this.evaluateInput.bind(this);
+    this.decimalInput = this.decimalInput.bind(this);
+  }
+  
+  clear(event) {
+    this.setState({
+      input: '0',
+      lastInput: '0',
+      formula: '0'
+    });
+  }
+    
+  numberInput(event){
+    if (this.state.formula.includes('=')) {
+      this.setState({
+        input: event.target.value,
+        lastInput: this.state.input,
+        formula: event.target.value
+      });
+    } else if (operators.test(this.state.input)) {
+        this.setState({
+          input: event.target.value,
+          lastInput: this.state.lastInput + this.state.input,
+          formula: this.state.formula + event.target.value
+        });        
+      } else {
+          this.setState({
+            input: this.state.input != '0' ? this.state.input + event.target.value : event.target.value,
+            lastInput: this.state.lastInput + this.state.input,
+            formula: this.state.input != '0' ? this.state.formula + event.target.value : event.target.value
+          });
+        }
+  }
+  
+  operatorInput(event){
+    if (this.state.formula.includes('=')) {
+      this.setState({
+        input: event.target.value,
+        lastInput: this.state.input,
+        formula: this.state.input + event.target.value
+      });
+    } else if (operators.test(this.state.input)) {
+        this.setState({
+          input: event.target.value,
+          lastInput: this.state.input,
+          formula: this.state.formula.slice(0, -1) + event.target.value
+        });
+      } else {
+          this.setState({
+            input: event.target.value,
+            lastInput: this.state.input,
+            formula: this.state.input != '0' ? this.state.formula + event.target.value : '0' + event.target.value
+          });
+        }
+  }
+  
+  decimalInput(event){
+    if (decimal.test(this.state.input)) {
+      this.setState({
+        input: this.state.input,
+        lastInput: this.state.input,
+        formula: this.state.formula
+      });
+    } else {
+        this.setState({
+          input: this.state.input + event.target.value,
+          lastInput: this.state.input,
+          formula: this.state.formula + event.target.value
+        });
+      }
+  }
+  
+  evaluateInput(event){
+    let answer = eval(this.state.formula);
+    this.setState({
+      input: answer,
+      lastInput: answer,
+      formula: this.state.formula + " = " + answer
+    });
+  }
+  
+  render() {
+    return (
+    <div className="main">
+      <h1 id="title">JavaScript Calculator</h1>
+      <div className="container">
+          <div className="header">
+            <p>{this.state.formula}</p>
+            <p id="display">{this.state.input}</p>
+          </div>
+  
+          <button className="btn btn1" id="clear" onClick={this.clear}>Clear</button>
+          <button className="btn btn2" id="divide" value="/" onClick={this.operatorInput}>/</button>
+          <button className="btn btn3" id="multiply" value="*" onClick={this.operatorInput}>*</button>
+        
+          <button className="btn btn4" id="seven" value="7" onClick={this.numberInput}>7</button>
+          <button className="btn btn5" id="eight" value="8" onClick={this.numberInput}>8</button>
+          <button className="btn btn6" id="nine" value="9" onClick={this.numberInput}>9</button>
+          <button className="btn btn7" id="subtract" value="-" onClick={this.operatorInput}>-</button>
+        
+          <button className="btn btn8" id="four" value="4" onClick={this.numberInput}>4</button>
+          <button className="btn btn9" id="five" value="5" onClick={this.numberInput}>5</button>
+          <button className="btn btn10" id="six" value="6" onClick={this.numberInput}>6</button>
+          <button className="btn btn11" id="add" value="+" onClick={this.operatorInput}>+</button>
+        
+          <button className="btn btn12" id="one" value="1" onClick={this.numberInput}>1</button>
+          <button className="btn btn13" id="two" value="2" onClick={this.numberInput}>2</button>
+          <button className="btn btn14" id="three" value="3" onClick={this.numberInput}>3</button>
+          <button className="btn btn15" id="equals" value="=" onClick={this.evaluateInput}>=</button>
+
+          <button className="btn btn16" id="zero" value="0" onClick={this.numberInput}>0</button>
+          <button className="btn btn17" id="decimal" value="." onClick={this.decimalInput}>.</button>
+        
+      </div>
+     </div>
+      );
+    }        
+  };
+            
+ReactDOM.render(<Calculator />, document.getElementById("app"));
